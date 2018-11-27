@@ -73,7 +73,7 @@ $(function () {
 
     // Handle phone number input
     var $number = $('#id_phone_number');
-    $number.intlTelInput({
+    var iti = $number.intlTelInput({
         separateDialCode: true,
         utilsScript: initial_page_data('number_utils_script'),
         initialCountry: "auto",
@@ -84,6 +84,51 @@ $(function () {
             });
         },
     });
+
+
+
+
+
+
+    // here, the index maps to the error code returned from getValidationError - see readme
+    var errorMap = [ "Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+
+    var reset = function() {
+  input.classList.remove("error");
+  errorMsg.innerHTML = "";
+  errorMsg.classList.add("hide");
+  validMsg.classList.add("hide");
+};
+
+
+    var input = document.querySelector("#id_phone_number"),
+        errorMsg = document.querySelector("#error-msg"),
+  validMsg = document.querySelector("#valid-msg");
+    // on blur: validate
+        input.addEventListener('blur', function () {
+          reset();
+          if (input.value.trim()) {
+            if (iti.isValidNumber()) {
+              validMsg.classList.remove("hide");
+            } else {
+              input.classList.add("error");
+              var errorCode = iti.getValidationError();
+              errorMsg.innerHTML = errorMap[errorCode];
+              errorMsg.classList.remove("hide");
+            }
+          }
+    });
+
+
+
+
+
+
+
+
+
+
     $number.keydown(function (e) {
         // prevents non-numeric numbers from being entered.
         // from http://stackoverflow.com/questions/995183/how-to-allow-only-numeric-0-9-in-html-inputbox-using-jquery
